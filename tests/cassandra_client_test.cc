@@ -47,6 +47,21 @@ protected:
     c= boost::shared_ptr<Cassandra>(cf->create());
   }
 
+  static void TearDownTestCase()
+  {
+    const string host("localhost");
+    int port= 9160;
+    boost::shared_ptr<CassandraFactory> cf;
+    boost::shared_ptr<Cassandra> c;
+    cf= boost::shared_ptr<CassandraFactory>(new CassandraFactory(host, port));
+    c= boost::shared_ptr<Cassandra>(cf->create());
+    try {
+        c->dropKeyspace("unittest");
+    } catch (org::apache::cassandra::InvalidRequestException e) {
+    }
+
+  }
+
   boost::shared_ptr<CassandraFactory> cf;
   boost::shared_ptr<Cassandra> c;
 };
@@ -120,6 +135,31 @@ TEST(Cassandra, GetKeyspaces)
   vector<KeyspaceDefinition> keyspaces= c.getKeyspaces();
   /* we assume the test server only has 1 keyspace: system */
   EXPECT_EQ(2, keyspaces.size());
+}
+
+TEST_F(ClientTest, AddColumn)
+{
+  cout << "start\n";
+  int64_t mock_data= 56;
+  string column_name = "third";
+  KeyspaceDefinition ks_def;
+  ks_def.setName("unittest");
+  c->createKeyspace(ks_def);
+  ColumnFamilyDefinition cf_def;
+  cf_def.setName("counter");
+  cf_def.setDefaultValidationClass("CounterColumnType");
+  cf_def.setKeyspaceName(ks_def.getName());
+  cf_def.setReplicationOnWrite(true);
+  cout << "keyspace\n";
+  c->setKeyspace(ks_def.getName());
+  cout << "column fam\n";
+  c->createColumnFamily(cf_def);
+  cout << "here\n";
+  c->add(ks_def.getName(),cf_def.getName(),"",column_name,mock_data, ConsistencyLevel::QUORUM);
+  cout << "there\n";
+  c->dropColumnFamily(cf_def.getName());
+  cout << "drop\n";
+  c->dropKeyspace(ks_def.getName());
 }
 
 

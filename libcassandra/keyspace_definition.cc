@@ -65,7 +65,8 @@ KeyspaceDefinition::KeyspaceDefinition(const string& in_name,
                                  thrift_entry.min_compaction_threshold,
                                  thrift_entry.max_compaction_threshold,
                                  thrift_entry.row_cache_save_period_in_seconds,
-                                 thrift_entry.key_cache_save_period_in_seconds);
+                                 thrift_entry.key_cache_save_period_in_seconds,
+                                 thrift_entry.replicate_on_write);
 
     col_family_defs.push_back(entry);
   }

@@ -18,13 +18,6 @@ using namespace libcassandra;
 using namespace std;
 using namespace org::apache::cassandra;
 
-/**
-     * removing:
-     *  thrift_entry.memtable_flush_after_mins,
-        thrift_entry.memtable_throughput_in_mb,
-        thrift_entry.memtable_operations_in_millions);
-     */
-
 
 ColumnFamilyDefinition::ColumnFamilyDefinition()
   :
@@ -44,7 +37,8 @@ ColumnFamilyDefinition::ColumnFamilyDefinition()
     max_compaction_threshold(22),
     row_cache_save_period_in_seconds(0),
     key_cache_save_period_in_seconds(0),
-    column_metadata()
+    column_metadata(),
+    replication_on_write(false)
 {}
 
 
@@ -64,7 +58,8 @@ ColumnFamilyDefinition::ColumnFamilyDefinition(const string& in_keyspace_name,
                                                const int32_t in_min_compaction_threshold,
                                                const int32_t in_max_compaction_threshold,
                                                const int32_t in_row_cache_save_period_in_seconds,
-                                               const int32_t in_key_cache_save_period_in_seconds)
+                                               const int32_t in_key_cache_save_period_in_seconds,
+                                               const bool replication_on_write_in)
   :
     keyspace_name(in_keyspace_name),
     name(in_name),
@@ -82,7 +77,8 @@ ColumnFamilyDefinition::ColumnFamilyDefinition(const string& in_keyspace_name,
     max_compaction_threshold(in_max_compaction_threshold),
     row_cache_save_period_in_seconds(in_row_cache_save_period_in_seconds),
     key_cache_save_period_in_seconds(in_key_cache_save_period_in_seconds),
-    column_metadata()
+    column_metadata(),
+    replication_on_write(replication_on_write_in)
 {
   for (vector<ColumnDef>::iterator it= in_column_metadata.begin();
        it != in_column_metadata.end();
@@ -97,6 +93,13 @@ ColumnFamilyDefinition::ColumnFamilyDefinition(const string& in_keyspace_name,
   }
 }
 
+bool ColumnFamilyDefinition::isReplicationOnWrite() const {
+    return replication_on_write;
+}
+
+void ColumnFamilyDefinition::setReplicationOnWrite(const bool replication_on_write_in) {
+    replication_on_write = replication_on_write_in;
+}
 
 string ColumnFamilyDefinition::getName() const
 {

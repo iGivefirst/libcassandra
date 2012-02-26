@@ -172,6 +172,12 @@ CfDef createCfDefObject(const ColumnFamilyDefinition& cf_def)
     }
     thrift_cf_def.__isset.column_metadata= true;
   }
+
+  if (cf_def.isReplicationOnWrite()) {
+      thrift_cf_def.replicate_on_write = true;
+  } else {
+      thrift_cf_def.replicate_on_write = false;
+  }
   return thrift_cf_def;
 }
 

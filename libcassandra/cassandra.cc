@@ -134,6 +134,35 @@ string Cassandra::getCurrentKeyspace() const
   return current_keyspace;
 }
 
+void Cassandra::add(const string& key,
+                             const string& column_family,
+                             const string& super_column_name,
+                             const string& counter_column_name,
+                             int64_t value,
+                             ConsistencyLevel::type level)
+{
+  ColumnParent col_parent;
+  col_parent.column_family.assign(column_family);
+  if (! super_column_name.empty())
+  {
+    col_parent.super_column.assign(super_column_name);
+    col_parent.__isset.super_column= true;
+  }
+  CounterColumn counterColumn;
+  counterColumn.name.assign(counter_column_name);
+  counterColumn.value = value;
+
+  thrift_client->add(key, col_parent, counterColumn, level);
+}
+
+void Cassandra::add(const string& key,
+                             const string& column_family,
+                             const string& super_column_name,
+                             const string& counter_column_name,
+                             int64_t value)
+{
+  add(key, column_family, super_column_name,counter_column_name,value, ConsistencyLevel::QUORUM);
+}
 
 void Cassandra::insertColumn(const string& key,
                              const string& column_family,
@@ -166,6 +195,7 @@ void Cassandra::insertColumn(const string& key,
    * TODO - validate the ColumnParent before the insert
    */
   thrift_client->insert(key, col_parent, col, level);
+
 }
 
 

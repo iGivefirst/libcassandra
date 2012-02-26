@@ -151,6 +151,37 @@ public:
                     const int64_t value);
 
   /**
+   * Increment a column, possibly inside a supercolumn
+   *
+   * @param[in] key the column key
+   * @param[in] column_family the column family
+   * @param[in] super_column_name the super column name (optional)
+   * @param[in] counter_column_name the column name
+   * @param[in] value the column value
+   * @param[in] level consistency level
+   */
+  void add(const std::string& key,
+              const std::string& column_family,
+              const std::string& super_column_name,
+              const std::string& counter_column_name,
+              int64_t value,
+              org::apache::cassandra::ConsistencyLevel::type level);
+  /**
+   * Increment a column, possibly inside a supercolumn.
+   *
+   * @param[in] key the column key
+   * @param[in] column_family the column family
+   * @param[in] super_column_name the super column name (optional)
+   * @param[in] counter_column_name the column name
+   * @param[in] value the column value
+   */
+  void add(const std::string& key,
+              const std::string& column_family,
+              const std::string& super_column_name,
+              const std::string& counter_column_name,
+              int64_t value);
+
+  /**
    * Removes all the columns that match the given column path
    *
    * @param[in] key the column or super column key

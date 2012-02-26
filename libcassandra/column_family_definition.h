@@ -50,9 +50,17 @@ public:
                          const int32_t in_min_compaction_threshold,
                          const int32_t in_max_compaction_threshold,
                          const int32_t in_row_cache_save_period_in_seconds,
-                         const int32_t in_key_cache_save_period_in_seconds);
+                         const int32_t in_key_cache_save_period_in_seconds,
+                         const bool replicate_on_write
+                         );
   ~ColumnFamilyDefinition() {}
 
+  /*
+   * @return repllication on write
+   */
+  bool isReplicationOnWrite() const;
+
+  void setReplicationOnWrite(const bool replication_on_write);
   /**
    * @return column family name
    */
@@ -302,6 +310,8 @@ private:
   int32_t key_cache_save_period_in_seconds;
 
   std::vector<ColumnDefinition> column_metadata;
+
+  bool replication_on_write;
 
 };
 
