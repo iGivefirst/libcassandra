@@ -139,7 +139,6 @@ TEST(Cassandra, GetKeyspaces)
 
 TEST_F(ClientTest, AddColumn)
 {
-  cout << "start\n";
   int64_t mock_data= 56;
   string column_name = "third";
   KeyspaceDefinition ks_def;
@@ -150,15 +149,26 @@ TEST_F(ClientTest, AddColumn)
   cf_def.setDefaultValidationClass("CounterColumnType");
   cf_def.setKeyspaceName(ks_def.getName());
   cf_def.setReplicationOnWrite(true);
-  cout << "keyspace\n";
   c->setKeyspace(ks_def.getName());
-  cout << "column fam\n";
   c->createColumnFamily(cf_def);
-  cout << "here\n";
   c->add(ks_def.getName(),cf_def.getName(),"",column_name,mock_data, ConsistencyLevel::QUORUM);
-  cout << "there\n";
+  int64_t res = 0;
+  try {
+    res = c->getColumnCounterValue(ks_def.getName(),cf_def.getName(),"",column_name);
+  } catch (org::apache::cassandra::InvalidRequestException e) {
+      cerr << "Error: " << e.why << "\n";
+      throw e;
+  }
+  EXPECT_EQ(mock_data, res);
+  c->add(ks_def.getName(),cf_def.getName(),"",column_name,mock_data, ConsistencyLevel::QUORUM);
+  try {
+    res = c->getColumnCounterValue(ks_def.getName(),cf_def.getName(),"",column_name);
+  } catch (org::apache::cassandra::InvalidRequestException e) {
+      cerr << "Error: " << e.why << "\n";
+      throw e;
+  }
+  EXPECT_EQ(mock_data * 2, res);
   c->dropColumnFamily(cf_def.getName());
-  cout << "drop\n";
   c->dropKeyspace(ks_def.getName());
 }
 

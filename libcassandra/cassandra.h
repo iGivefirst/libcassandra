@@ -241,7 +241,23 @@ public:
                          const std::string& super_column_name);
 
   /**
-   * Rertieve a column.
+   * Retrieve a counter column.
+   *
+   * @param[in] key the column key
+   * @param[in] column_family the column family
+   * @param[in] super_column_name the super column name (optional)
+   * @param[in] column_name the column name (optional)
+   * @param[in] level consistency level
+   * @return a column
+   */
+  org::apache::cassandra::CounterColumn getCounterColumn(const std::string& key,
+                                           const std::string& column_family,
+                                           const std::string& super_column_name,
+                                           const std::string& column_name,
+                                           org::apache::cassandra::ConsistencyLevel::type level);
+
+  /**
+   * Retrieve a column.
    *
    * @param[in] key the column key
    * @param[in] column_family the column family
@@ -319,6 +335,20 @@ public:
    */
   int64_t getIntegerColumnValue(const std::string& key,
                                 const std::string& column_family,
+                                const std::string& column_name);
+
+  /**
+   * Retrieve a column counter value
+   *
+   * @param[in] key the column key
+   * @param[in] column_family the column family
+   * @param[in] column_name the column name (optional)
+   * @return the value for the column that corresponds to the given parameters
+   *         but as an integer
+   */
+  int64_t getColumnCounterValue(const std::string& key,
+                                const std::string& column_family,
+                                const std::string& super_column_name,
                                 const std::string& column_name);
 
   org::apache::cassandra::SuperColumn getSuperColumn(const std::string& key,

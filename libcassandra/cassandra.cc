@@ -307,6 +307,30 @@ Column Cassandra::getColumn(const string& key,
   return cosc.column;
 }
 
+CounterColumn Cassandra::getCounterColumn(const string& key,
+                            const string& column_family,
+                            const string& super_column_name,
+                            const string& column_name,
+                            ConsistencyLevel::type level)
+{
+  ColumnPath col_path;
+  col_path.column_family.assign(column_family);
+  if (! super_column_name.empty())
+  {
+    col_path.super_column.assign(super_column_name);
+    col_path.__isset.super_column= true;
+  }
+  col_path.column.assign(column_name);
+  col_path.__isset.column= true;
+  ColumnOrSuperColumn cosc;
+  thrift_client->get(cosc, key, col_path, level);
+  if (cosc.counter_column.name.empty())
+  {
+    throw(InvalidRequestException());
+  }
+  return cosc.counter_column;
+}
+
 
 Column Cassandra::getColumn(const string& key,
                             const string& column_family,
@@ -347,6 +371,16 @@ int64_t Cassandra::getIntegerColumnValue(const string& key,
 {
 	string ret= getColumn(key, column_family, column_name).value;
   return deserializeLong(ret);
+}
+
+int64_t Cassandra::getColumnCounterValue(const string& key,
+                                         const string& column_family,
+                                         const string& super_column_name,
+                                         const string& column_name)
+{
+  CounterColumn col =  getCounterColumn(key, column_family, super_column_name, column_name,ConsistencyLevel::QUORUM);
+  int64_t val = col.value;
+  return val;
 }
 
 
