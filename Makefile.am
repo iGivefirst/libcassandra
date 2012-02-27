@@ -23,6 +23,7 @@ test-docs:
 	(cd docs && $(MAKE) test-docs)
 include libgenthrift/include.am
 include libcassandra/include.am
+include libcassie/include.am
 include tests/include.am
 
 TESTS += ${check_PROGRAMS}

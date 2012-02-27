@@ -23,6 +23,15 @@ Makefile
 Makefile.in
 autom4te.cache/
 libgenthrift/.deps/
+libcassie/.deps/
+libcassie/.dirstamp
+libcassie/configure.h
+libcassie/.libs/
+libcassie/util/.deps/
+libcassie/util/.libs/
+libcassie/util/.dirstamp
+libcassie/util/.deps/.dirstamp
+
 libcassandra/.deps/
 libcassandra/.dirstamp
 libcassandra/configure.h
@@ -31,6 +40,7 @@ libcassandra/util/.deps/
 libcassandra/util/.libs/
 libcassandra/util/.dirstamp
 libcassandra/util/.deps/.dirstamp
+
 libgenthrift/.libs/
 libgenthrift/.dirstamp
 libcassandra/.libs/
