@@ -1,0 +1,33 @@
+#!/sbin/runscript
+# Copyright 1999-2007 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+PIDFILE=/var/lib/cassandra/cassandra.pid
+
+depend() {
+	need net
+}
+
+start() {
+	source /usr/share/cassandra-bin/cassandra.in.sh
+	ebegin "Starting cassandra"
+	java=`/usr/bin/java-config-2 -J`
+	start-stop-daemon --start --quiet \
+		--user cassandra:cassandra \
+		--background --pidfile ${PIDFILE} --make-pidfile \
+		--exec ${java} -- \
+		-cp ${CLASSPATH} \
+		-Dlog4j.configuration=log4j-server.properties \
+		-XX:HeapDumpPath="/var/tmp/cassandra/java_`date +%s`.hprof" \
+		-XX:ErrorFile="/var/tmp/cassandra/hs_err_`date +%s`.log" \
+		$JVM_OPTS \
+		org.apache.cassandra.thrift.CassandraDaemon
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping cassandra-daemon"
+	start-stop-daemon --stop --quiet \
+		--pidfile ${PIDFILE}
+	eend $?
+}
