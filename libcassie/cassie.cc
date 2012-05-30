@@ -43,6 +43,9 @@ namespace libcassie {
 			catch (const std::exception& e) {
 				cout << "Exception " << typeid(e).name() << ": " << e.what() << endl;
 				return(NULL);
+			} catch (...) {
+				cout << "Unknown exception" << endl;
+				return(NULL);
 			}
 
 			cassie = new _cassie;

@@ -51,8 +51,6 @@ namespace libcassie {
 						(org::apache::cassandra::ConsistencyLevel::type) level,
 						0
 						);
-				cassie_set_error(cassie, CASSIE_ERROR_NONE, NULL);
-				return(1);
 			}
 			catch (org::apache::cassandra::InvalidRequestException &ire) {
 				cassie_set_error(cassie, CASSIE_ERROR_INVALID_REQUEST, "Exception: %s", ire.why.c_str());
@@ -65,7 +63,13 @@ namespace libcassie {
 			catch (const std::exception& e) {
 				cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Exception %s: %s", typeid(e).name(), e.what());
 				return(0);
+			} catch(...) {
+				cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+				return(0);
 			}
+
+			cassie_set_error(cassie, CASSIE_ERROR_NONE, NULL);
+			return(1);
 
 		}
 
@@ -93,6 +97,7 @@ namespace libcassie {
 						cpp_column_name,
 						(org::apache::cassandra::ConsistencyLevel::type) level
 						);
+				cassie_set_error(cassie, CASSIE_ERROR_NONE, NULL);
 				return(cassie_column_convert(cassie, cpp_column));
 			}
 			catch (org::apache::cassandra::NotFoundException &nfe) {
@@ -111,6 +116,13 @@ namespace libcassie {
 				cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Exception %s: %s", typeid(e).name(), e.what());
 				return(NULL);
 			}
+			catch(...) {
+                cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+                return(NULL);
+            }
+
+            cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+            return(NULL);
 
 		}
 
@@ -171,6 +183,13 @@ namespace libcassie {
 				cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Exception %s: %s", typeid(e).name(), e.what());
 				return(NULL);
 			}
+		    catch(...) {
+		        cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+		        return(NULL);
+		    }
+
+		     cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+		     return(NULL);
 
 		}
 
@@ -262,6 +281,13 @@ namespace libcassie {
 				cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Exception %s: %s", typeid(e).name(), e.what());
 				return(NULL);
 			}
+			catch(...) {
+			    cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+			    return(NULL);
+			}
+
+			cassie_set_error(cassie, CASSIE_ERROR_OTHER, "Unknown exception");
+			return(NULL);
 
 		}
 
